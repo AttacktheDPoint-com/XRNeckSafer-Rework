@@ -1,6 +1,25 @@
+# XRNeckSafer — Community Patch
 
+> **This is not just a fork.** This repo contains NobiWan's original [XRNeckSafer](https://gitlab.com/NobiWan/xrnecksafer) with a community fix pass — crash fixes, memory leak fixes, and thread safety improvements applied to both the C++ OpenXR API layer and the C# GUI. No new features were added. The original author's code and design are preserved; we only fixed things that were broken. See the [SteamVR version (VRNeckSafer)](https://github.com/AttacktheDPoint-com/VRNeckSafer) for the same treatment on the SteamVR codebase.
 
-### Download link: [XRNeckSaferBeta5a.msi](https://gitlab.com/NobiWan/xrnecksafer/-/blob/master/Assets/XRNeckSafer-beta5a.msi)
+**Latest:** [Community Patch 1](https://github.com/AttacktheDPoint-com/XRNeckSafer/releases/tag/community-patch-1) (drop-in replacement for beta5a)
+
+---
+
+## What's in the community patch?
+
+C++ API layer fixes:
+- **Fixed duplicate MapViewOfFile in shared memory init** — leaked a view handle on every app launch
+- **Fixed null pointer crash in xrEndFrame** — if shared memory failed to initialize, dereferencing the null buffer would crash the host VR game with an access violation
+- **Guarded getenv("LOCALAPPDATA") against null** — prevents undefined behavior in service contexts
+
+C# GUI fixes:
+- **Atomic config file writes** — config is written to a .tmp file first then copied over, preventing corruption on crash or power loss
+- **Thread safety on joystick dictionary** — GetJoystickGuids() and GetJoystickName() now lock the dictionary, preventing InvalidOperationException when a joystick connects/disconnects while the UI thread is reading
+
+---
+
+### Download link: [Community Patch 1](https://github.com/AttacktheDPoint-com/XRNeckSafer/releases/tag/community-patch-1) | Original: [XRNeckSaferBeta5a.msi](https://gitlab.com/NobiWan/xrnecksafer/-/blob/master/Assets/XRNeckSafer-beta5a.msi)
 
 # **Description**
 
@@ -41,17 +60,6 @@ Pressing the graph button (above the table) shows you a representation of the en
 ### **Smooth Autorotation**
 
 Smooth Autorotation gives a linear amplification of your head rotation, beginning at the **"Start at"** value. **"Amplify by"** 100%  means that for every degree head rotation you get one extra degree visual rotation. So, with a "Start at" value of 90 deg, if you turn your head to 100 you get 110 deg visual rotation (10 deg from 90 deg + 10 deg amplification). 200% gives 2 extra degrees for every "real" degree head rotation, and so on. **Please be aware that this non-1:1 motion can cause nausea!** (it does for me). If this is the case for you too, better use Stepwise Autorotation, It is much easier on your stomach.
-
-**Community patch (AttacKTheDPoint fork):**
-
-C++ API layer fixes:
-- Fixed duplicate MapViewOfFile call in shared memory init — leaked the first view handle on every app launch
-- Fixed null pointer crash if shared memory fails to initialize — would crash the host VR game process with an access violation in xrEndFrame
-- Guarded getenv("LOCALAPPDATA") against null return to prevent undefined behavior
-
-C# GUI fixes:
-- Atomic config file writes — config is now written to a .tmp file first then copied over, preventing corruption on crash or power loss
-- Thread safety: added lock() around GetJoystickGuids() and GetJoystickName() — background worker modifies the joystick dictionary during device connect/disconnect while these methods read it from the UI thread, risking InvalidOperationException
 
 **Changelog for beta5a**
 - Compatibility with other OpenXR games (non opencomposite). Tested with **MSFS** but should work with other OPenXR games too
