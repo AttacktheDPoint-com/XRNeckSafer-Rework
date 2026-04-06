@@ -127,21 +127,9 @@ namespace {
 			Log("XRNeckSafer shared memory created\n");
 		}
 
-		if (m_shmHandler) {
-			buffer = (shmVal_s*)MapViewOfFile(m_shmHandler, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(shmValues));
-			if (NULL != buffer) {
-				Log("XRNeckSafer shared memory ready\n");
-				buffer->hasBeenCentered = false;
-			}
-			else {
-				Log("Cannot map XRNeckSafer shared memory: null buffer.\n");
-			}
-		}
-		else {
-			Log("Couldn't create XRNeckSafer shared memory\n");
-		}
-
-
+		// Map the shared memory view once. The duplicate MapViewOfFile block that
+		// was here leaked the first view handle (no UnmapViewOfFile) and overwrote
+		// the buffer pointer with a second identical mapping.
 		if (m_shmHandler) {
 			buffer = (shmVal_s*)MapViewOfFile(m_shmHandler, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(shmValues));
 			if (NULL != buffer) {
@@ -402,6 +390,10 @@ namespace {
 		toMonitor("STAGE z", locationStage.pose.position.z);
 
 		if (location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT) {
+
+			// Guard against null buffer — if shared memory failed to initialize,
+			// buffer is null and dereferencing it here would crash the host VR game.
+			if (!buffer) return result2;
 
 			// center button pressed? -> current orientation gets center orientation
 			if (buffer->resetHmdOrientation) {
@@ -765,7 +757,9 @@ extern "C" {
 		// Start logging to file.
 		if (!logStream.is_open())
 		{
-			std::string logFile = (std::filesystem::path(getenv("LOCALAPPDATA")) / std::filesystem::path(LayerName + ".log")).string();
+			// Guard against getenv returning null (rare but possible in service contexts)
+			const char* localAppData = getenv("LOCALAPPDATA");
+			std::string logFile = (std::filesystem::path(localAppData ? localAppData : ".") / std::filesystem::path(LayerName + ".log")).string();
 			logStream.open(logFile, std::ios_base::ate);
 			Log("dllHome is \"%s\"\n", dllHome.c_str());
 		}

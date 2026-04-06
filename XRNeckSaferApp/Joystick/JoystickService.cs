@@ -49,11 +49,17 @@ namespace XRNeckSafer
 
         public static string GetJoystickName(Guid guid)
         {
-            if (!_joysticGuids.TryGetValue(guid, out Joystick joystick))
+            // Lock required — background worker modifies _joysticGuids during
+            // device connect/disconnect. Reading without the lock can throw
+            // InvalidOperationException (collection modified during enumeration).
+            lock (_joysticGuids)
             {
-                return null;
+                if (!_joysticGuids.TryGetValue(guid, out Joystick joystick))
+                {
+                    return null;
+                }
+                return joystick?.Properties?.InstanceName;
             }
-            return joystick?.Properties?.InstanceName;
         }
 
         public static List<JoystickButton> GetPressedButtons()
@@ -72,7 +78,13 @@ namespace XRNeckSafer
 
         public static Guid[] GetJoystickGuids()
         {
-            return _joysticGuids.Keys.ToArray();
+            // Lock required — background worker modifies _joysticGuids during
+            // device connect/disconnect. Keys.ToArray() without the lock can
+            // throw if the dictionary is modified mid-enumeration.
+            lock (_joysticGuids)
+            {
+                return _joysticGuids.Keys.ToArray();
+            }
         }
 
         public static void Stop()

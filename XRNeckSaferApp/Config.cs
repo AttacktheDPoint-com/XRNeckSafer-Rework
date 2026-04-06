@@ -160,7 +160,23 @@ namespace XRNeckSafer
             {
                 Directory.CreateDirectory(directory);
             }
-            File.WriteAllText(configfilename, JsonConvert.SerializeObject(this, Formatting.Indented, new Newtonsoft.Json.Converters.StringEnumConverter()));
+            // Atomic write: serialize to a temp file then copy over the real one.
+            // If the app crashes mid-write, the temp file is left behind but the
+            // real config is never corrupted.
+            string tempFile = configfilename + ".tmp";
+            try
+            {
+                string json = JsonConvert.SerializeObject(this, Formatting.Indented, new Newtonsoft.Json.Converters.StringEnumConverter());
+                File.WriteAllText(tempFile, json);
+                File.Copy(tempFile, configfilename, overwrite: true);
+                File.Delete(tempFile);
+            }
+            catch (Exception)
+            {
+                // Fallback to direct write if atomic path fails
+                try { File.WriteAllText(configfilename, JsonConvert.SerializeObject(this, Formatting.Indented, new Newtonsoft.Json.Converters.StringEnumConverter())); }
+                catch { }
+            }
         }
     }
 }
