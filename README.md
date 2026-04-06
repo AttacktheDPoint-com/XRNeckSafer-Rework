@@ -1,8 +1,8 @@
-# XRNeckSafer — Community Patch
+# XRNeckSafer — Rework
 
-> **This is not just a fork.** This repo contains NobiWan's original [XRNeckSafer](https://gitlab.com/NobiWan/xrnecksafer) with a community fix pass — crash fixes, memory leak fixes, and thread safety improvements applied to both the C++ OpenXR API layer and the C# GUI. No new features were added. The original author's code and design are preserved; we only fixed things that were broken. See the [SteamVR version (VRNeckSafer)](https://github.com/AttacktheDPoint-com/VRNeckSafer) for the same treatment on the SteamVR codebase.
+> **This is not just a fork.** This repo contains NobiWan's original [XRNeckSafer](https://gitlab.com/NobiWan/xrnecksafer) with a community rework — crash fixes, memory leak fixes, and thread safety improvements applied to both the C++ OpenXR API layer and the C# GUI. No new features were added. The original author's code and design are preserved; we only fixed things that were broken. See the [SteamVR version (VRNeckSafer-Revival)](https://github.com/AttacktheDPoint-com/VRNeckSafer-Revival) for the same treatment on the SteamVR codebase.
 
-**Latest:** [Community Patch 1](https://github.com/AttacktheDPoint-com/XRNeckSafer/releases/tag/community-patch-1) (drop-in replacement for beta5a)
+**Latest:** [Community Patch 1](https://github.com/AttacktheDPoint-com/XRNeckSafer-Rework/releases/tag/community-patch-1) (drop-in replacement for beta5a)
 
 ---
 
@@ -19,7 +19,7 @@ C# GUI fixes:
 
 ---
 
-### Download link: [Community Patch 1](https://github.com/AttacktheDPoint-com/XRNeckSafer/releases/tag/community-patch-1) | Original: [XRNeckSaferBeta5a.msi](https://gitlab.com/NobiWan/xrnecksafer/-/blob/master/Assets/XRNeckSafer-beta5a.msi)
+### Download link: [Community Patch 1](https://github.com/AttacktheDPoint-com/XRNeckSafer-Rework/releases/tag/community-patch-1) | Original: [XRNeckSaferBeta5a.msi](https://gitlab.com/NobiWan/xrnecksafer/-/blob/master/Assets/XRNeckSafer-beta5a.msi)
 
 # **Description**
 
