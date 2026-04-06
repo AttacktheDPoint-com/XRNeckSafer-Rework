@@ -1,5 +1,13 @@
 # XRNeckSafer — Rework
 
+<p>
+  <img src="https://img.shields.io/badge/original-abandoned-important.svg" alt="Original Status">
+  <img src="https://img.shields.io/badge/last%20original%20commit-2023--01-lightgrey.svg" alt="Last Original Commit">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
+  <img src="https://img.shields.io/badge/patches-2%20community%20patches-brightgreen.svg" alt="Patches">
+  <img src="https://img.shields.io/badge/rework-active-brightgreen.svg" alt="Rework Status">
+</p>
+
 > **This is not just a fork.** This repo contains NobiWan's original [XRNeckSafer](https://gitlab.com/NobiWan/xrnecksafer) with a community rework — crash fixes, memory leak fixes, and thread safety improvements applied to both the C++ OpenXR API layer and the C# GUI. No new features were added. The original author's code and design are preserved; we only fixed things that were broken. See the [SteamVR version (VRNeckSafer-Revival)](https://github.com/AttacktheDPoint-com/VRNeckSafer-Revival) for the same treatment on the SteamVR codebase.
 
 **Latest:** [Community Patch 2](https://github.com/AttacktheDPoint-com/XRNeckSafer-Rework/releases/tag/community-patch-2) (drop-in replacement for beta5a)
@@ -198,3 +206,24 @@ Cheers,
  J2_NobiWan
 
 ### Download link: [XRNeckSaferBeta5a.zip](https://gitlab.com/NobiWan/xrnecksafer/-/blob/master/Assets/XRNeckSafer-beta5a.msi)
+
+---
+
+## Support This Project
+
+This project was reworked by **[Attack the D Point](https://github.com/AttacktheDPoint-com)** — we find abandoned open-source projects, fix them, and ship them.
+
+If this fix saved you time, consider supporting the work:
+
+<a href="https://github.com/sponsors/AttacktheDPoint-com"><img src="https://img.shields.io/badge/Sponsor_on_GitHub-%E2%9D%A4-ea4aaa.svg" alt="GitHub Sponsors"></a>
+<a href="https://ko-fi.com/atdpt"><img src="https://img.shields.io/badge/Buy_a_Coffee-ko--fi-ff5e5b.svg" alt="Ko-fi"></a>
+
+Your support helps us keep reviving projects like this one. See what else we're working on at [AttacktheDPoint-com](https://github.com/AttacktheDPoint-com).
+
+---
+
+## Credits
+
+All credit for the original project goes to **[NobiWan](https://gitlab.com/NobiWan)**, **Nikoz**, and all original contributors. This fork exists because the original was too good to let die.
+
+*Licensed under MIT — same as the original.*
