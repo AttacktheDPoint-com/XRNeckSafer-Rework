@@ -296,7 +296,10 @@ namespace XRNeckSafer
             bool hp_pressed = PitchAutorotationHoldButton.ActionPropertyValue;
             //            bool h_pressed = checkButtonPress(SetHoldButton1, conf.HoldButton1);
 
-            bool pitchlimit = _vr.GetHmdPitch() - 90 > Config.Instance.PitchLimForAutorot;
+            // GetHmdPitch() returns 0 (up) → 90 (level) → 180 (down).
+            // (90 - pitch) is positive when looking up — matching the intended
+            // behavior of freezing autorotation when the pilot looks up.
+            bool pitchlimit = 90 - _vr.GetHmdPitch() > Config.Instance.PitchLimForAutorot;
 
             bool autofrozen = h_pressed || pitchlimit;
 

@@ -198,19 +198,19 @@ namespace {
 	EulerAngles ToEulerAngles(XrQuaternionf q) {
 		EulerAngles angles;
 
-		// roll (x-axis rotation)
+		// yaw (Y-axis rotation) — stored in angles.yaw
 		float sinr_cosp = 2 * (q.w * q.y + q.x * q.z);
 		float cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
 		angles.yaw = -std::atan2f(sinr_cosp, cosr_cosp);
 
-		// pitch (y-axis rotation)
+		// pitch (X-axis rotation) — stored in angles.pitch
 		float sinp = 2 * (q.w * q.x - q.z * q.y);
 		if (std::fabs(sinp) >= 1)
-			angles.pitch = -std::copysignf((float)(M_PI / 2), sinp); // use 90 degrees if out of range
+			angles.pitch = -std::copysignf((float)(M_PI / 2), sinp);
 		else
 			angles.pitch = -std::asinf(sinp);
 
-		// yaw (z-axis rotation)
+		// roll (Z-axis rotation) — stored in angles.roll (unused)
 		float siny_cosp = 2 * (q.w * q.z + q.x * q.y);
 		float cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
 		angles.roll = std::atan2f(siny_cosp, cosy_cosp);
@@ -268,13 +268,22 @@ namespace {
 		referenceSpaceCreateInfo.poseInReferenceSpace = Pose::Identity();
 		referenceSpaceCreateInfo.referenceSpaceType = XR_REFERENCE_SPACE_TYPE_LOCAL;
 		const XrResult resL = nextXrCreateReferenceSpace(*session, &referenceSpaceCreateInfo, &m_LocalSpace);
+		if (XR_FAILED(resL)) {
+			Log("Failed to create LOCAL reference space: %d\n", resL);
+		}
 		DebugLog("LOCAL space: %d\n", m_LocalSpace);
 		referenceSpaceCreateInfo.referenceSpaceType = XR_REFERENCE_SPACE_TYPE_VIEW;
 		const XrResult resV = nextXrCreateReferenceSpace(*session, &referenceSpaceCreateInfo, &m_ViewSpace);
+		if (XR_FAILED(resV)) {
+			Log("Failed to create VIEW reference space: %d\n", resV);
+		}
 		isViewSpace.insert(m_ViewSpace);
 		DebugLog("VIEW space: %d\n", m_ViewSpace);
 		referenceSpaceCreateInfo.referenceSpaceType = XR_REFERENCE_SPACE_TYPE_STAGE;
 		const XrResult resS = nextXrCreateReferenceSpace(*session, &referenceSpaceCreateInfo, &m_StageSpace);
+		if (XR_FAILED(resS)) {
+			Log("Failed to create STAGE reference space: %d\n", resS);
+		}
 		DebugLog("STAGE space: %d\n", m_StageSpace);
 
 		holdYawOffsetValue = 0;
@@ -374,6 +383,8 @@ namespace {
 
 		const XrResult result2 = nextXrLocateSpace(m_ViewSpace, m_LocalSpace, frameEndInfo->displayTime, &location);
 		DebugLog("XrLocateSpace for HMD %d\n", result2);
+		// If the locate call failed, location data is uninitialized — skip offset logic
+		if (XR_FAILED(result2)) return result;
 
 		XrSpaceLocation locationStage;
 		locationStage.type = XR_TYPE_SPACE_LOCATION;

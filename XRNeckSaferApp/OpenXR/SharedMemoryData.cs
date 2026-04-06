@@ -1,5 +1,12 @@
-﻿namespace XRNeckSafer
+﻿using System.Runtime.InteropServices;
+
+namespace XRNeckSafer
 {
+    // Explicit sequential layout to guarantee byte-for-byte match with the C++
+    // shmVal_s struct in dllmain.cpp. Without this attribute, the CLR could
+    // insert padding between the bool fields that doesn't match MSVC's layout,
+    // causing silent data corruption across the shared memory boundary.
+    [StructLayout(LayoutKind.Sequential)]
     public struct SharedMemoryData
     {
         public float hmdYawAngle;

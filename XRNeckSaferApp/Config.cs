@@ -150,6 +150,7 @@ namespace XRNeckSafer
                 conf.DownAutoSteps.Add(new int[3] { 80, 71, 40 });
             }
             if (conf.ActionProperties == null) conf.ActionProperties = new List<ActionProperty>();
+            if (conf.KeyboardToJoystickAssignments == null) conf.KeyboardToJoystickAssignments = new List<KeyboardToJoystickModel>();
             return conf;
         }
 

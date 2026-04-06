@@ -239,6 +239,9 @@ namespace XRNeckSafer
         {
             grx = ClientSize.Width - 40;
             gry = ClientSize.Height / 2 - 30;
+            // Dispose previous bitmap and graphics to avoid GDI handle leak
+            _graphics?.Dispose();
+            bm1?.Dispose();
             bm1 = new Bitmap(ClientSize.Width, ClientSize.Height / 2);
             _graphics = Graphics.FromImage(bm1);
 
@@ -267,10 +270,11 @@ namespace XRNeckSafer
         }
         void DrawBitmap2()
         {
-
             grx = ClientSize.Width - 40;
             gry = ClientSize.Height / 2 - 30;
-
+            // Dispose previous bitmap and graphics to avoid GDI handle leak
+            _graphics?.Dispose();
+            bm2?.Dispose();
             bm2 = new Bitmap(ClientSize.Width, ClientSize.Height / 2);
             _graphics = Graphics.FromImage(bm2);
 
@@ -295,18 +299,20 @@ namespace XRNeckSafer
             LRLine();
             FwdLine();
 
+            // Use Brushes.* static properties instead of new SolidBrush() — the
+            // framework caches these, so they don't leak GDI handles on every redraw.
             Rectangle L1 = new Rectangle(65, 10, 125, 48);
-            _graphics.FillRectangle(new SolidBrush(Color.White), L1);
+            _graphics.FillRectangle(Brushes.White, L1);
             _graphics.DrawRectangle(blackPen, L1);
-            _graphics.DrawString("Rotational offset:", myFont, new SolidBrush(Color.Black), L1.X + 1, L1.Y + 2);
-            _graphics.DrawString(" Activation (act)", myFont, new SolidBrush(Color.Red), L1.X + 1, L1.Y + 17);
-            _graphics.DrawString(" Deactivation (de)", myFont, new SolidBrush(Color.Green), L1.X + 1, L1.Y + 32);
+            _graphics.DrawString("Rotational offset:", myFont, Brushes.Black, L1.X + 1, L1.Y + 2);
+            _graphics.DrawString(" Activation (act)", myFont, Brushes.Red, L1.X + 1, L1.Y + 17);
+            _graphics.DrawString(" Deactivation (de)", myFont, Brushes.Green, L1.X + 1, L1.Y + 32);
             Rectangle L2 = new Rectangle(ClientSize.Width - 192, 10, 137, 48);
-            _graphics.FillRectangle(new SolidBrush(Color.White), L2);
+            _graphics.FillRectangle(Brushes.White, L2);
             _graphics.DrawRectangle(blackPen, L2);
-            _graphics.DrawString("Translational offset:", myFont, new SolidBrush(Color.Black), L2.X + 1, L2.Y + 2);
-            _graphics.DrawString(" Left/Right (L/R)", myFont, new SolidBrush(Color.Blue), L2.X + 1, L2.Y + 17);
-            _graphics.DrawString(" Forward (Fwd)", myFont, new SolidBrush(Color.CadetBlue), L2.X + 1, L2.Y + 32);
+            _graphics.DrawString("Translational offset:", myFont, Brushes.Black, L2.X + 1, L2.Y + 2);
+            _graphics.DrawString(" Left/Right (L/R)", myFont, Brushes.Blue, L2.X + 1, L2.Y + 17);
+            _graphics.DrawString(" Forward (Fwd)", myFont, Brushes.CadetBlue, L2.X + 1, L2.Y + 32);
             _graphics.RotateTransform(270);
             _graphics.DrawString("Autorot values", myFont, myBrush, -gry / 2 - 60, 7);
 
