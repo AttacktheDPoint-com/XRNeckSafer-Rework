@@ -2,24 +2,46 @@
 
 > **This is not just a fork.** This repo contains NobiWan's original [XRNeckSafer](https://gitlab.com/NobiWan/xrnecksafer) with a community rework — crash fixes, memory leak fixes, and thread safety improvements applied to both the C++ OpenXR API layer and the C# GUI. No new features were added. The original author's code and design are preserved; we only fixed things that were broken. See the [SteamVR version (VRNeckSafer-Revival)](https://github.com/AttacktheDPoint-com/VRNeckSafer-Revival) for the same treatment on the SteamVR codebase.
 
-**Latest:** [Community Patch 1](https://github.com/AttacktheDPoint-com/XRNeckSafer-Rework/releases/tag/community-patch-1) (drop-in replacement for beta5a)
+**Latest:** [Community Patch 2](https://github.com/AttacktheDPoint-com/XRNeckSafer-Rework/releases/tag/community-patch-2) (drop-in replacement for beta5a)
 
 ---
 
-## What's in the community patch?
+## What's in the rework?
 
-C++ API layer fixes:
+**Community Patch 1:**
+
+C++ API layer:
 - **Fixed duplicate MapViewOfFile in shared memory init** — leaked a view handle on every app launch
 - **Fixed null pointer crash in xrEndFrame** — if shared memory failed to initialize, dereferencing the null buffer would crash the host VR game with an access violation
 - **Guarded getenv("LOCALAPPDATA") against null** — prevents undefined behavior in service contexts
 
-C# GUI fixes:
+C# GUI:
 - **Atomic config file writes** — config is written to a .tmp file first then copied over, preventing corruption on crash or power loss
 - **Thread safety on joystick dictionary** — GetJoystickGuids() and GetJoystickName() now lock the dictionary, preventing InvalidOperationException when a joystick connects/disconnects while the UI thread is reading
 
+**Community Patch 2:**
+
+C++ API layer:
+- **Added error checks on reference space creation** — failures in xrCreateSession were silently ignored, leaving null space handles that would crash on the next xrLocateSpace call
+- **Added xrLocateSpace failure check** — on failure, location data is uninitialized; reading it is undefined behavior
+- **Fixed Euler angle comments** — yaw/roll labels were swapped in the code comments (output was always correct, cosmetic fix to prevent future confusion)
+
+C# GUI:
+- **Fixed pitch limit sign** — same bug as VRNeckSafer: triggered when looking down instead of up. Now correctly freezes autorotation when the pilot looks up past the threshold
+- **Fixed Graph GDI handle leak** — bitmaps and graphics objects not disposed on redraw, leaking ~2 GDI handles per resize/config edit
+- **Fixed Graph SolidBrush leak** — 8 inline brushes created and abandoned on every legend redraw, replaced with framework-cached Brushes.*
+- **Added [StructLayout] to SharedMemoryData** — guarantees byte-for-byte match with the C++ shmVal_s struct across the shared memory boundary
+- **Fixed crash on fresh install** — CreateDefaultConfig didn't initialize KeyboardToJoystickAssignments, causing a NullReferenceException in KeyboardToJoystickService
+
+**Still to investigate (for testing):**
+- JoystickService.GetUpdates() reads collections without locks during device connect/disconnect
+- RegistryService disable parsing is locale-dependent (`line.EndsWith("0x0")`)
+- Shared memory has no synchronization primitives (data tearing possible on multi-field updates)
+- xrCreateReferenceSpace hook wiring in xrCreateApiLayerInstance (dead code path)
+
 ---
 
-### Download link: [Community Patch 1](https://github.com/AttacktheDPoint-com/XRNeckSafer-Rework/releases/tag/community-patch-1) | Original: [XRNeckSaferBeta5a.msi](https://gitlab.com/NobiWan/xrnecksafer/-/blob/master/Assets/XRNeckSafer-beta5a.msi)
+### Download link: [Community Patch 2](https://github.com/AttacktheDPoint-com/XRNeckSafer-Rework/releases/tag/community-patch-2) | Original: [XRNeckSaferBeta5a.msi](https://gitlab.com/NobiWan/xrnecksafer/-/blob/master/Assets/XRNeckSafer-beta5a.msi)
 
 # **Description**
 
